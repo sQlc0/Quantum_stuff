@@ -1,0 +1,62 @@
+# calling imports
+
+from qiskit import *
+
+# creating registers for our qbits and bits
+
+qr = QuantumRegister(2)
+cr = ClassicalRegister
+
+# creates circuit
+
+circuit = QuantumCircuit(qr, cr)
+
+
+# calls matplotlib
+%matplotlib inline
+
+
+# applies hadamard gate
+
+circuit.h[qr(0)]
+circuit.cx[qr(0), qr(1)]
+
+# draw circuit
+
+circuit.draw(output= 'mpl', intial_state=True, cregbundle= False)
+
+# measure circuit
+
+circuit.measure(qr, cr)
+
+# calls simulator
+
+simulator = Aer.get_backend('qasm_simulator')
+result = execute(circuit, backend = simulator).result()
+from qiskit.tools.visulization import plot_historgram
+
+# plots results on histogram
+
+plot_histogram(result.get_counts(circuit))
+
+# loads IMBQ account
+
+IBMQ.load_account()
+
+provider = IBMQ.get_provider('ibm-q')
+
+# list provider backends
+
+provider.backends()
+
+# set qunatum computer for run
+
+qcomp = provider.get_backend('ibmq_santiago')
+job = execute(circuit, backend=qcomp)
+from qiskit.tools.monitor import job_monitor
+
+job_monitor(job)
+
+#plot histogram results
+
+plot_hostogram(results.get_counts(circuit))
