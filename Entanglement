@@ -1,0 +1,23 @@
+from qiskit import *
+
+# creates entaglemnt between a pair of qubits
+
+circuit = QuantumCircuit(2,2)
+circuit.h(0)
+circuit.cx(0,1)
+circuit.measure([0,1], [0,1])
+
+# creates simulator
+
+simulator = Aer.get_backend('statevector_simulator')
+
+result = execute(circuit, backend = simulator).result()
+statevector = result.get_statevector()
+print(statevector)
+
+# prints bloch sphere of multivector
+
+%matplotlib inline
+circuit.draw(output = 'mpl')
+
+plot_bloch_multivector(statevector)
