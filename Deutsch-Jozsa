@@ -1,0 +1,99 @@
+import numpy as np
+from qiskit import *
+%matplotlib inline
+
+
+# length of bit string 
+
+n=3
+
+#constant oracle
+const_oracle = QuantumCircuit(n+)
+
+# generates a random number
+
+output=np.random.randinit(2)
+
+# if the random number is 1, apply the x-gate to all qbits
+
+if outpu == 1:
+    const_oracle.x(n)
+    
+const_oracle.draw(output = 'mpl')
+
+
+#creating balanced oracle
+
+balanced_oracle = QuantumCircuit(n+1)
+b_str = "101"
+
+# places x-gates
+for qubit in range(len(b_str)):
+    if b_str[qubit] == '1':
+        balanced_oracle.x(qubit)
+        
+balanced_oracle.barrier()
+
+# CNOT on all qubts as targets
+
+for qubit in range(n):
+    balanced_oracle.cx(qubit, n)
+    
+balanced_oracle.barrier()
+
+# places x-gates
+
+for qubits in range(len(b_str)):
+    if b_str[qubit] == '1':
+        balanced_oracle.x(qubit)  #finsishes wrapping above qubits in x-gates
+#show oracle
+
+balanced_oracle.draw(output='mpl')
+
+
+#quanutm cicruit with n+1 qubits
+
+dj_circuit += QuantumCircuit(n+1, n)
+
+# applying H-gates
+
+for qubit in range(n):
+  dj_circuit.h(qubit) 
+  
+dj_circuit.x(n)
+dj_circuit.h(n)
+
+dj_circuit.draw(output='mpl')
+
+
+# adding oracle
+
+dj_circuit += balanced_oracle                 # combining DJ w/ balanced circuit
+dj_circuit.draw(output='mpl')
+
+for qubit in range(n):
+  dj_circuit.h(n)
+dj_circuit.barrier()
+
+
+
+#measure
+
+for i in range(n):
+    dj_circuit.measure(i,i)
+    
+dj_circuit.draw(output='mpl')
+
+
+#calling backend simulator
+
+backend = Aer.get_backend('qasm_simulator')
+shots = 1024
+results = execute(dj_circuit, backend=backend, shots=shots).result()
+
+answer = results.get_counts()
+
+plot_histogram(answer)
+
+
+  
