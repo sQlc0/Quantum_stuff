@@ -1,0 +1,49 @@
+import qiskit
+import matplotlib as mpl
+from random import randinit
+
+n = 6
+circ= q.QuantumCircuit(n+1,n)
+
+for i in range(0,n):
+    circuit.h(i)
+
+def Oracle(circuit, n):
+    hidden_bits = randint(0,2**n-1)
+    hidden_bits = format(hidden_bits, '0'=str(n)+'b')
+    
+    circuit.barrier()
+    for i in range(n):
+    
+        if hidden_bits[i] == '0':
+           pass
+        elif hidden_bits[i] == '1':
+              circuit.cx(i,n+1)
+        
+      circuit.barrier()
+      return circuit, hidden_bits
+
+circuit.x(n+1)
+circuit.h(n+1)
+
+circuit,hidden_bits = Oracle(circuit,n)
+
+for i in range(n):
+    circuit.h(i)
+    circuit.measure(i,i)
+    
+    
+simulator = qiskit.BasicAer.get_backend('qasm_simulator')
+job = qiskit.execute(circuit, simulator, shots=1234, memory=True)
+result = job.result()
+
+measurments = result.get_memory() [0]
+measurments = measurements[::-1]
+
+
+print(f'The Hidden Bit String was {hidden_bits}.')
+print(f'The prediction was {measurements}.')
+if hidden_bits == measurements:
+    print('Correct!')
+
+    
