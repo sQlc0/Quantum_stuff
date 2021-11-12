@@ -1,0 +1,47 @@
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+import math
+import numpy as np
+
+from qiskit import *
+from qiskit.providers.ibmq import least_busy
+
+
+##-------------------------------------------
+qr = QuantumRegister(2, 'qr')
+cr = ClassicalRegister(2, 'cr')
+
+# Create the quantum circuit
+qc = QuantumCircuit(q,c)
+
+## Step 1: H-gate(all) 
+qc.h(qr)
+
+
+## step 2: oracle circuit
+
+qc.cz(qr[1],qr[0])
+qc.barrier(qr)
+
+qc.h(qr)
+qc.x(qr)
+qc.cz(qr[1],qr[0])
+qc.x(qr)
+qc.h(qr)
+qc.barrier(qr)
+
+## measure
+qc.measure(qr[0],cr[0])
+qc.measure(qr[1],cr[1])
+
+## run simulation
+
+simulator = Aer.get_backend('qasm_simulator')
+result = execute(qc, backend = simulator, shots = 2048).result()
+counts = result.get_counts()
+
+print('RESULT: ',counts,'\n')
+
+from qiskit.tools.visualization import plot_histogram
+plot_histogram(counts)
