@@ -1,0 +1,42 @@
+from qiskit.visualization import plot_state_city, plot_bloch_multivector
+from qiskit.visualization import plot_state_paulivec, plot_state_hinton
+from qiskit.visualization import plot_state_qsphere
+
+bell = QuantumCircuit(2,2)
+bell.h(0)
+bell.cx(0,1)
+bell.measure([0,1], [0,1])
+
+
+backend = BasicAer.get_backend('statevector_simulator')
+result = backend.run(transpile(bell, backend)).result()
+
+psi = result.get_statevector(bell)
+
+plot_state_city(psi, title="My City", color=['black', 'orange'])
+
+################################
+
+plot_state_hinton(psi, title="MyHinton")
+
+
+################################
+
+
+plot_state_qsphere(psi,)
+
+##############################
+
+plot_state_paulivec(psi)
+
+
+##############################
+
+
+plot_bloch_multivector(psi, title="My Bloch Spheres")
+
+
+##########################################
+
+
+
