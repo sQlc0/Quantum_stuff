@@ -1,0 +1,32 @@
+from qiskit import *
+from qiskit.visualization import plot_histogram 
+from qiskit.tools.monitor import job_monitor
+
+bell = QuantumCircuit(2,2)
+bell.h(0)
+bell.cx(0,1)
+
+meas = QuantumCircuit(2,2)
+meas.measure([0,1],[0,1])
+
+backend = BasicAer.get_backend('qasm_simulator') #this is the device we run the circuit on
+circ = bell.compose(meas)
+result = backend.run(transpile(circ, backend), shots=1000).result()
+counts = results.get_counts(circ)
+
+print(counts)
+
+
+sec_res = backend.run(transpile(circ, backend), shots=1000).result()
+sec_counts = sec_res.get_counts(circ)
+
+
+legend = ['First execution', 'Second execution']
+plot_histogram([counts, sec_counts], legend=legend)
+
+########################################################
+
+plot_histogram([counts, sec_counts], legend=legend, sort='desc', figsize=(15,12),
+                color=['oragne', 'black'], bar_labels=False)
+                
+  
