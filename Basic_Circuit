@@ -1,0 +1,66 @@
+import numpy as np
+from qiskit import QuantumCircuit
+from qiskit import *
+
+qc = QuantumCircuit(3,3)
+
+qc.h(0)
+qc.cx(0,1)
+qc.cx(0,2)
+
+qc.draw('mpl')
+
+#simulate circuits
+
+from qiskit.quantum.info import Statevector
+
+state = Statevector.from_int(0, 2**3)
+
+state = state.evolve(qc)
+
+state.draw('latex')
+
+from qiskit.visualization import array_to_latex
+
+state.draw('qsphere')
+
+state.draw('hinton')
+
+from qiskit.quantum_info import operator
+
+U = Operator(qc)
+
+#shows results
+
+U.data
+
+
+#QASM BACKEND SIMULATOR
+
+meas = QuantumCircuit(3,3)
+
+meas.barrier(range(3))
+
+meas.measure(range(3), range(3))
+
+qcc = meas.compose(qc, range(30, front=True)
+
+qcc.draw('mpl')
+
+from qiskit import transpile
+from qiskit.providers.aer import QasmSimulator
+
+backend = QasmSimulator()
+
+qc_comp = transpile(qc, backend)
+
+job_sim = backend.run(qc_comp, shots=1024)
+
+resultsim = job_sim.result()
+
+counts = resultsim.get_counts(qc_comp)
+
+print(counts)
+
+from qiskit.visualization import plot_histogram
+plot_histogram(counts)
