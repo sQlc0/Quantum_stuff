@@ -1,0 +1,100 @@
+import numpy as np
+from qiskit import QuantumCircuit
+from qiskit import Aer, transpile
+from qiskit.visualization import plot_histogram, plot_state_city
+import qiskit.quantum_info as qi
+
+
+#Aer backends
+Aer.backends()
+
+####[AerSimulator('aer_simulator'),
+# AerSimulator('aer_simulator_statevector'),
+ #AerSimulator('aer_simulator_density_matrix'),
+ #AerSimulator('aer_simulator_stabilizer'),
+ #AerSimulator('aer_simulator_matrix_product_state'),
+ #AerSimulator('aer_simulator_extended_stabilizer'),
+ #AerSimulator('aer_simulator_unitary'),
+ #AerSimulator('aer_simulator_superop'),
+ #QasmSimulator('qasm_simulator'),
+ #StatevectorSimulator('statevector_simulator'),
+ #UnitarySimulator('unitary_simulator'),
+ #PulseSimulator('pulse_simulator')]
+ 
+ simulator = Aer.get_backend('aer_simulator')
+ 
+ qc = QuantumCircuit(2)
+ 
+ qc.h(0)
+ qc.cx(0,1)
+ qc.measure_all()
+ 
+ #transplie for simulator
+ simulator = Aer.get_backend('aer_simulator')
+ qc = transpile(qc, simulator)
+ 
+ #run and get counts
+ result = simulator.run(qc).result()
+ counts = result.get_counts(qc)
+ plot_histogram(counts, title='Bell-State counts')
+ 
+ shots = 10000
+ 
+ #stablizer sim
+ 
+ sim_stab = Aer.get_backend('aer_simulator_stablizer')
+ job_stab = sim_stab.run(qc, shots=shots)
+ count_stab = job_stab.result().get_counts(0)
+ 
+ #statevector simulation
+ 
+ sim_state = Aer.get_backend('aer_simulator_statevector')
+ job_state = sim_state.run(qc, shots=shots)
+ count_state = job_state.result().get_counts(0)
+ 
+ #Density Matrix sim
+ 
+ sim_mat = Aer.get_backend('aer_simulator_density_matrix')
+ job_mat = sim_mat.run(qc, shots=shots)
+ count_mat =  job_mat.result().get_counts(0)
+ 
+ #Matrix Producst sim
+ 
+ sim_pro = Aer.get_backend('aer_simulator_matrix_product_state')
+ job_pro = sim_pro.run(qc, shots=shots)
+ count_pro = job_pro.result().get_counts(0)
+ 
+ plot_histogram([count_stab, count_state, count_mat, count_pro],
+                title='Counts for differnet simulation methods', legend=['stabilizer', 'statevector', 
+                'matrix density', matrix product state'])
+ #################################################################################################################
+ 
+ 
+ #saving final statevector
+ 
+ qc = QuantumCircuit(2)
+ qc.h(0)
+ qc.cx(0,1)
+ qc.save_statevector()
+ 
+ #transpile for sim
+ 
+ simulator = Aer.get_backend('aer_simulator')
+ qc = transpile(qc, simulator)
+ 
+ # run and get statevector
+ 
+ qc = QuantumCircuit(2)
+ qc.h(0)
+ qc.cx(01,)
+ qc.save_unitary()
+ 
+ simulator = Aer.get_backend('aer_simulator')
+ qc = transpile(qc, simulator)
+ 
+ result = simulator.run(qc).result()
+ 
+ unitary = result.get_unitary(qc)
+ print("Circuit unitary:\n", unitary.round(5))
+ 
+ 
